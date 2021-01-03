@@ -1,6 +1,7 @@
 package gui;
 
 import static Application.Program.getMainScene;
+import Model.service.DepartamentoService;
 import gui.util.Alert;
 import java.io.IOException;
 import java.net.URL;
@@ -33,7 +34,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemDepartmentAction() {
-        loadView("/gui/DepartamentoLista.fxml");
+        loadView2("/gui/DepartamentoLista.fxml");
     }
 
     @FXML
@@ -57,6 +58,28 @@ public class MainViewController implements Initializable {
             mainVBox.getChildren().clear();
             mainVBox.getChildren().add(mainMenu);
             mainVBox.getChildren().addAll(newVBox.getChildren());
+            
+        } catch (IOException ex) {
+            Alert.showAlert("IO Exception", "Erro para carregar a Página", ex.getMessage(), AlertType.ERROR);
+        }
+    }
+    
+    private synchronized void loadView2(String path) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            VBox newVBox = loader.load();
+
+            Scene MainScene = getMainScene();
+            VBox mainVBox = (VBox) ((ScrollPane) MainScene.getRoot()).getContent();
+
+            Node mainMenu = mainVBox.getChildren().get(0);
+            mainVBox.getChildren().clear();
+            mainVBox.getChildren().add(mainMenu);
+            mainVBox.getChildren().addAll(newVBox.getChildren());
+            
+            DepartamentoListaController controller = loader.getController();
+            controller.setDepartamentoService(new DepartamentoService());
+            controller.updateTableView();
             
         } catch (IOException ex) {
             Alert.showAlert("IO Exception", "Erro para carregar a Página", ex.getMessage(), AlertType.ERROR);
