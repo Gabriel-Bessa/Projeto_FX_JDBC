@@ -3,17 +3,25 @@ package gui;
 import Application.Program;
 import Model.entities.Departamento;
 import Model.service.DepartamentoService;
+import gui.util.Alert;
+import static gui.util.Utils.stageAtual;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class DepartamentoListaController implements Initializable{
@@ -35,8 +43,9 @@ public class DepartamentoListaController implements Initializable{
     private ObservableList<Departamento> obsList; 
     
     @FXML
-    public void onBtnNewAction(){
-        System.out.println("onBtnNewAction");
+    public void onBtnNewAction(ActionEvent event){
+        Stage parentStage = stageAtual(event);
+        createDialogForm("/gui/FormDepartamento.fxml", parentStage);
     }
     
     @Override
@@ -63,6 +72,24 @@ public class DepartamentoListaController implements Initializable{
         List<Departamento> list = service.findAll();
         obsList = FXCollections.observableArrayList(list);
         tableViewDepartamento.setItems(obsList);
+    }
+    
+    private void createDialogForm(String path, Stage parentStage){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            Pane pane = loader.load();
+            
+            Stage modalStage = new Stage();
+            modalStage.setTitle("Entre com os dados do departamento!");
+            modalStage.setScene(new Scene(pane));
+            modalStage.setResizable(true);
+            modalStage.initOwner(parentStage);
+            modalStage.initModality(Modality.WINDOW_MODAL); 
+            modalStage.showAndWait();
+            
+        } catch (IOException e) {
+            Alert.showAlert("IO Exception", "ERROR", e.getMessage(), javafx.scene.control.Alert.AlertType.ERROR);
+        }
     }
     
 }
