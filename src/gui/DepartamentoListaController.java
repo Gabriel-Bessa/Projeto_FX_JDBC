@@ -44,8 +44,9 @@ public class DepartamentoListaController implements Initializable{
     
     @FXML
     public void onBtnNewAction(ActionEvent event){
+        Departamento obj = new Departamento();
         Stage parentStage = stageAtual(event);
-        createDialogForm("/gui/FormDepartamento.fxml", parentStage);
+        createDialogForm(obj, "/gui/FormDepartamento.fxml", parentStage);
     }
     
     @Override
@@ -74,10 +75,13 @@ public class DepartamentoListaController implements Initializable{
         tableViewDepartamento.setItems(obsList);
     }
     
-    private void createDialogForm(String path, Stage parentStage){
+    private void createDialogForm(Departamento obj, String path, Stage parentStage){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Pane pane = loader.load();
+            
+            FormDepartamentoController controller = loader.getController();
+            controller.setEntity(obj);
             
             Stage modalStage = new Stage();
             modalStage.setTitle("Entre com os dados do departamento!");
@@ -88,6 +92,7 @@ public class DepartamentoListaController implements Initializable{
             modalStage.showAndWait();
             
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             Alert.showAlert("IO Exception", "ERROR", e.getMessage(), javafx.scene.control.Alert.AlertType.ERROR);
         }
     }

@@ -43,7 +43,8 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemAboutAction() {
-        loadView("/gui/About.fxml", x -> {});
+        loadView("/gui/About.fxml", x -> {
+        });
     }
 
     @Override
@@ -55,21 +56,19 @@ public class MainViewController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             VBox newVBox = loader.load();
 
-            Scene MainScene = getMainScene();
-            VBox mainVBox = (VBox) ((ScrollPane) MainScene.getRoot()).getContent();
+            Scene mainScene =getMainScene();
+            VBox mainVBox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
 
             Node mainMenu = mainVBox.getChildren().get(0);
             mainVBox.getChildren().clear();
             mainVBox.getChildren().add(mainMenu);
             mainVBox.getChildren().addAll(newVBox.getChildren());
-            
+
             T controller = loader.getController();
             acaoDeInicializacao.accept(controller);
-            
         } catch (IOException ex) {
             Alert.showAlert("IO Exception", "Erro para carregar a Página", ex.getMessage(), AlertType.ERROR);
         }
     }
-    
-    
+
 }
